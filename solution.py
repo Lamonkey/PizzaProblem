@@ -4,10 +4,20 @@ def readInput(file):
     ingreds = {}
     pizzas = []
     teams = []
-
+    lineIdx = 0
+    with open(file) as reader:
+        for line in reader:
+            if lineIdx == 0:
+                tmpList = line.splite()
+                tmpList = [int(x) for x in tmpList]
+                numPizza = tmpList[0]
+                teams = tmpList[1:]
+            else:
+                tmpList = line.split()
+                pizzas.append(tmpList)
     return numPizza,ingreds,teams,pizzas
 #ingred {"onion":true,mushroom:true....}
-#pizzas[[onion,pepepr,olive],[mushroom,tomato,basil]]
+#pizzas[[#ingredient][onion,pepepr,olive],[#ingredient][mushroom,tomato,basil]]
 #1.select team with most person first
 def selectTeam(numPizza,ingreds,teams,pizzas):
     #return [[teamType,pizza1,pizza2],[teamType2,pizza3,pizza4]]
