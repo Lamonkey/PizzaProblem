@@ -20,7 +20,7 @@ def readInput(file):
                         ingreds[i] = True
             lineIdx = lineIdx+1
     return numPizza,ingreds,teams,pizzas
-numPizza,ingreds,teams,pizzas = readInput("e_many_teams.in")
+
 
 #print(numPizza)
 #print(ingreds)
@@ -36,12 +36,15 @@ def selectTeam(numPizza,ingreds,teams,pizzas):
     retTeam = []
     pizzas = sorted(pizzas, key=lambda x:x[0],reverse=True)
     i = len(teams)-1
-    while (i >= 0):
+    #i = 0
+    while (i >= len(teams)):
         for k in range(0, teams[i]):
             if(i+2 <= len(pizzas)):
                 tmpReuslt,pizzas = calculateScore(i+2,ingreds,pizzas)
                 retTeam.append(tmpReuslt)
                 teams[i] = teams[i] - 1
+            else:
+                break
         i = i-1
     return retTeam
 
@@ -56,6 +59,8 @@ def calculateScore(numberOfPeople, ingreds, pizzas):
     dupPizza = pizzas.copy()
     while selectedPizza < numberOfPeople:
         for pizza in range(0, len(pizzas)):
+            if(selectedPizza == numberOfPeople):
+                break
             sum = 0
             for ing in pizzas[pizza][2]:
                 sum = sum + ingredsCopy[ing]
@@ -69,7 +74,24 @@ def calculateScore(numberOfPeople, ingreds, pizzas):
     return ret,dupPizza
 
 #this function use to genrate submission
-def generateSub():
-    pass
+def generateSub(file,numPizza,ingreds,teams,pizzas):
+    result = selectTeam(numPizza,ingreds,teams,pizzas)
+    f = open(file, "w")
+    f.write(str(len(result)))
+    f.write("\n")
+    for line in result:
+        for char in line:
+            f.write(str(char)+" ")
+        f.write("\n")
+    f.close()
 
-print(selectTeam(numPizza,ingreds,teams,pizzas))
+# numPizza,ingreds,teams,pizzas = readInput("a_example")
+# generateSub("a.txt",numPizza,ingreds,teams,pizzas)
+# numPizza,ingreds,teams,pizzas = readInput("b_little_bit_of_everything.in")
+# generateSub("b.txt",numPizza,ingreds,teams,pizzas)
+numPizza,ingreds,teams,pizzas = readInput("c_many_ingredients.in")
+generateSub("c.txt",numPizza,ingreds,teams,pizzas)
+# numPizza,ingreds,teams,pizzas = readInput("d_many_pizzas.in")
+# generateSub("d.txt",numPizza,ingreds,teams,pizzas)
+# numPizza,ingreds,teams,pizzas = readInput("e_many_teams.in")
+# generateSub("e.txt",numPizza,ingreds,teams,pizzas)
