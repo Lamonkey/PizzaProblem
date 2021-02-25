@@ -14,10 +14,10 @@ def readInput(file):
                 teams = tmpList[1:]
             else:
                 tmpList = line.split()
-                pizzas.append([list(tmpList[0]),list(tmpList[1:])])
+                pizzas.append([(int(tmpList[0])),list(tmpList[1:])])
                 for i in tmpList[1:]:
                     if i not in ingreds.keys():
-                        ingreds[i] = True
+                        ingreds[i] = False
             lineIdx = lineIdx+1
     return numPizza,ingreds,teams,pizzas
 numPizza,ingreds,teams,pizzas = readInput("a_example")
