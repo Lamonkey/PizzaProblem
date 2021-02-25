@@ -1,3 +1,4 @@
+import random
 #read input file
 def readInput(file):
     numPizza = 0
@@ -37,12 +38,14 @@ def selectTeam(numPizza,ingreds,teams,pizzas):
     pizzas = sorted(pizzas, key=lambda x:x[0],reverse=True)
     i = len(teams)-1
     #i = 0
-    while (i >= len(teams)):
-        for k in range(0, teams[i]):
-            if(i+2 <= len(pizzas)):
+    random.seed=1
+    while (i >= 0):
+        teamIndex = random.randint(0,2)
+        for k in range(0, teams[teamIndex]):
+            if(teamIndex+2 <= len(pizzas)):
                 tmpReuslt,pizzas = calculateScore(i+2,ingreds,pizzas)
                 retTeam.append(tmpReuslt)
-                teams[i] = teams[i] - 1
+                teams[teamIndex] = teams[teamIndex] - 1
             else:
                 break
         i = i-1
