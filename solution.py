@@ -1,4 +1,3 @@
-import random
 #read input file
 def readInput(file):
     numPizza = 0
@@ -38,17 +37,33 @@ def selectTeam(numPizza,ingreds,teams,pizzas):
     pizzas = sorted(pizzas, key=lambda x:x[0],reverse=True)
     i = len(teams)-1
     #i = 0
-    random.seed=1
-    while (i >= 0):
-        teamIndex = random.randint(0,2)
-        for k in range(0, teams[teamIndex]):
-            if(teamIndex+2 <= len(pizzas)):
-                tmpReuslt,pizzas = calculateScore(i+2,ingreds,pizzas)
-                retTeam.append(tmpReuslt)
-                teams[teamIndex] = teams[teamIndex] - 1
-            else:
-                break
-        i = i-1
+   
+    while (teams[0] >0 or teams[1] > 0 or teams[2] > 0):
+        if(len(pizzas) == 0):
+            break
+        if(len(pizzas)<4 and teams[2] > 0):
+            if(len(pizzas)< 3 and teams[1] > 0):
+                if(len(pizzas) < 2 and teams[0]>0):
+                    break
+        perfectSocre1,perfectSocre2,perfectSocre3=-1,-1,-1
+        if(teams[0] >0 and 2 <= len(pizzas)):
+            tmpReuslt1,pizzas1,perfectSocre1 = calculateScore(2,ingreds,pizzas)
+        if(teams[1] >0 and 3 <= len(pizzas)):
+            tmpReuslt2,pizzas2,perfectSocre2 = calculateScore(3,ingreds,pizzas)
+        if(teams[2] >0 and 4 <= len(pizzas)):
+            tmpReuslt3,pizzas3,perfectSocre3 = calculateScore(4,ingreds,pizzas)
+        if(perfectSocre1 >= perfectSocre2 and perfectSocre1 >= perfectSocre3 and perfectSocre1 >= 0 ):
+            retTeam.append(tmpReuslt1)
+            teams[0] = teams[0] - 1
+            pizzas = pizzas1
+        elif(perfectSocre2 >= perfectSocre1 and perfectSocre2 >= perfectSocre3 and perfectSocre2 >= 0):
+            retTeam.append(tmpReuslt2)
+            teams[1] = teams[1] - 1
+            pizzas = pizzas2
+        elif(perfectSocre3 >= 0):
+            retTeam.append(tmpReuslt3)
+            teams[2] = teams[2] - 1
+            pizzas = pizzas3
     return retTeam
 
 #select pizza with most ingreds first, then find next one with most 
@@ -56,6 +71,7 @@ def selectTeam(numPizza,ingreds,teams,pizzas):
 #calculate the best combination for numberOfPeople pizza
 def calculateScore(numberOfPeople, ingreds, pizzas):
     ret = []
+    perfectSore = 0
     ingredsCopy = ingreds.copy()
     ret.append(numberOfPeople)
     selectedPizza = 0
@@ -68,13 +84,15 @@ def calculateScore(numberOfPeople, ingreds, pizzas):
             for ing in pizzas[pizza][2]:
                 sum = sum + ingredsCopy[ing]
             if sum == pizzas[pizza][0] or pizza == len(pizzas) - 1:
+                if sum == pizzas[pizza][0]:
+                    perfectSore = perfectSore + 1
                 for ing in pizzas[pizza][2]:
                     ingredsCopy[ing] = False
                 ret.append(pizzas[pizza][1])
                 dupPizza.remove(pizzas[pizza])
                 selectedPizza = selectedPizza + 1
         pizzas = dupPizza.copy()
-    return ret,dupPizza
+    return ret,dupPizza,perfectSore
 
 #this function use to genrate submission
 def generateSub(file,numPizza,ingreds,teams,pizzas):
@@ -88,12 +106,12 @@ def generateSub(file,numPizza,ingreds,teams,pizzas):
         f.write("\n")
     f.close()
 
-# numPizza,ingreds,teams,pizzas = readInput("a_example")
-# generateSub("a.txt",numPizza,ingreds,teams,pizzas)
-# numPizza,ingreds,teams,pizzas = readInput("b_little_bit_of_everything.in")
-# generateSub("b.txt",numPizza,ingreds,teams,pizzas)
-numPizza,ingreds,teams,pizzas = readInput("c_many_ingredients.in")
-generateSub("c.txt",numPizza,ingreds,teams,pizzas)
+numPizza,ingreds,teams,pizzas = readInput("a_example")
+generateSub("a.txt",numPizza,ingreds,teams,pizzas)
+numPizza,ingreds,teams,pizzas = readInput("b_little_bit_of_everything.in")
+generateSub("b.txt",numPizza,ingreds,teams,pizzas)
+# numPizza,ingreds,teams,pizzas = readInput("c_many_ingredients.in")
+# generateSub("c.txt",numPizza,ingreds,teams,pizzas)
 # numPizza,ingreds,teams,pizzas = readInput("d_many_pizzas.in")
 # generateSub("d.txt",numPizza,ingreds,teams,pizzas)
 # numPizza,ingreds,teams,pizzas = readInput("e_many_teams.in")
