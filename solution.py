@@ -8,14 +8,23 @@ def readInput(file):
     with open(file) as reader:
         for line in reader:
             if lineIdx == 0:
-                tmpList = line.splite()
+                tmpList = line.split()
                 tmpList = [int(x) for x in tmpList]
                 numPizza = tmpList[0]
                 teams = tmpList[1:]
             else:
                 tmpList = line.split()
-                pizzas.append(tmpList)
+                pizzas.append([list(tmpList[0]),list(tmpList[1:])])
+                for i in tmpList[1:]:
+                    if i not in ingreds.keys():
+                        ingreds[i] = True
+            lineIdx = lineIdx+1
     return numPizza,ingreds,teams,pizzas
+numPizza,ingreds,teams,pizzas = readInput("a_example")
+print(numPizza)
+print(ingreds)
+print(teams)
+print(pizzas)
 #ingred {"onion":true,mushroom:true....}
 #pizzas[[#ingredient][onion,pepepr,olive],[#ingredient][mushroom,tomato,basil]]
 #1.select team with most person first
