@@ -14,13 +14,13 @@ def readInput(file):
                 teams = tmpList[1:]
             else:
                 tmpList = line.split()
-                pizzas.append([(int(tmpList[0])),list(tmpList[1:])])
+                pizzas.append([(int(tmpList[0])),lineIdx - 1,list(tmpList[1:])])
                 for i in tmpList[1:]:
                     if i not in ingreds.keys():
-                        ingreds[i] = False
+                        ingreds[i] = True
             lineIdx = lineIdx+1
     return numPizza,ingreds,teams,pizzas
-numPizza,ingreds,teams,pizzas = readInput("a_example")
+numPizza,ingreds,teams,pizzas = readInput("e_many_teams.in")
 
 #print(numPizza)
 #print(ingreds)
@@ -34,12 +34,14 @@ def selectTeam(numPizza,ingreds,teams,pizzas):
     #deliver pizza to team with most people
     #append result of calculateScore to final,result
     retTeam = []
-    pizzas = sorted(pizzas, key=lambda x:x[0])
+    pizzas = sorted(pizzas, key=lambda x:x[0],reverse=True)
     i = len(teams)-1
-    while (i > 0):
+    while (i >= 0):
         for k in range(0, teams[i]):
-            retTeam.append(calculateScore(teams[i]+2,ingreds,pizzas))
-            teams[i] = teams[i] - 1
+            if(i+2 <= len(pizzas)):
+                tmpReuslt,pizzas = calculateScore(i+2,ingreds,pizzas)
+                retTeam.append(tmpReuslt)
+                teams[i] = teams[i] - 1
         i = i-1
     return retTeam
 
@@ -50,21 +52,24 @@ def calculateScore(numberOfPeople, ingreds, pizzas):
     ret = []
     ingredsCopy = ingreds.copy()
     ret.append(numberOfPeople)
-
-    for pizza in range(0, numberOfPeople):
-        sum = 0
-        for ing in pizzas[pizza][1]:
-            sum = sum + ingredsCopy[ing]
-        if sum == pizzas[pizza][0] or pizza == len(pizzas) - 1:
-            for ing in pizzas[pizza][1]:
-                ingredsCopy[ing] = False
-            ret.append(pizza)
-            del pizzas[pizza]
-    return ret
+    selectedPizza = 0
+    dupPizza = pizzas.copy()
+    while selectedPizza < numberOfPeople:
+        for pizza in range(0, len(pizzas)):
+            sum = 0
+            for ing in pizzas[pizza][2]:
+                sum = sum + ingredsCopy[ing]
+            if sum == pizzas[pizza][0] or pizza == len(pizzas) - 1:
+                for ing in pizzas[pizza][2]:
+                    ingredsCopy[ing] = False
+                ret.append(pizzas[pizza][1])
+                dupPizza.remove(pizzas[pizza])
+                selectedPizza = selectedPizza + 1
+        pizzas = dupPizza.copy()
+    return ret,dupPizza
 
 #this function use to genrate submission
 def generateSub():
     pass
 
 print(selectTeam(numPizza,ingreds,teams,pizzas))
-
