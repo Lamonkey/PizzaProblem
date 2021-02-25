@@ -34,9 +34,21 @@ def selectTeam(numPizza,ingreds,teams,pizzas):
 #select pizza with most ingreds first, then find next one with most 
 #ingreds while max the score
 #calculate the best combination for numberOfPeople pizza
-def calculateScore(numberOfPeople,ingreds):
-    #return [teamType,pizza1,pizza2]
-    return []
+def calculateScore(teams, numberOfPeople, ingreds, pizzas):
+    ret = []
+    ingredsCopy = ingreds.copy()
+    ret.append(numberOfPeople)
+
+    for pizza in range(0, len(pizzas)):
+        sum = 0
+        for ing in pizzas[pizza][1]:
+            sum = sum + ingredsCopy[ing]
+        if sum == pizzas[pizza][0] or pizza == len(pizzas) - 1:
+            for ing in pizzas[pizza][1]:
+                ingredsCopy[ing] = False
+            ret.append(pizza)
+            del pizzas[pizza]
+    return ret
 
 #this function use to genrate submission
 def generateSub():
