@@ -29,7 +29,8 @@ def readInput(file):
 #ingred {"onion":true,mushroom:true....}
 #pizzas[[#ingredient][onion,pepepr,olive],[#ingredient][mushroom,tomato,basil]]
 #1.select team with most person first
-def selectTeam(numPizza,ingreds,teams,pizzas):
+def selectTeam(file,output):
+    numPizza,ingreds,teams,pizzas = readInput(file)
     #return [[teamType,pizza1,pizza2],[teamType2,pizza3,pizza4]]
     #deliver pizza to team with most people
     #append result of calculateScore to final,result
@@ -64,7 +65,7 @@ def selectTeam(numPizza,ingreds,teams,pizzas):
             retTeam.append(tmpReuslt3)
             teams[2] = teams[2] - 1
             pizzas = pizzas3
-    return retTeam
+    generateSub(output,retTeam)
 
 #select pizza with most ingreds first, then find next one with most 
 #ingreds while max the score
@@ -95,8 +96,7 @@ def calculateScore(numberOfPeople, ingreds, pizzas):
     return ret,dupPizza,perfectSore
 
 #this function use to genrate submission
-def generateSub(file,numPizza,ingreds,teams,pizzas):
-    result = selectTeam(numPizza,ingreds,teams,pizzas)
+def generateSub(file,result):
     f = open(file, "w")
     f.write(str(len(result)))
     f.write("\n")
@@ -105,14 +105,23 @@ def generateSub(file,numPizza,ingreds,teams,pizzas):
             f.write(str(char)+" ")
         f.write("\n")
     f.close()
-
-numPizza,ingreds,teams,pizzas = readInput("a_example")
-generateSub("a.txt",numPizza,ingreds,teams,pizzas)
-numPizza,ingreds,teams,pizzas = readInput("b_little_bit_of_everything.in")
-generateSub("b.txt",numPizza,ingreds,teams,pizzas)
-# numPizza,ingreds,teams,pizzas = readInput("c_many_ingredients.in")
-# generateSub("c.txt",numPizza,ingreds,teams,pizzas)
-# numPizza,ingreds,teams,pizzas = readInput("d_many_pizzas.in")
-# generateSub("d.txt",numPizza,ingreds,teams,pizzas)
-# numPizza,ingreds,teams,pizzas = readInput("e_many_teams.in")
-# generateSub("e.txt",numPizza,ingreds,teams,pizzas)
+import multiprocessing as mp
+if __name__ == "__main__":
+    pool = []
+    p1 = mp.Process(target=selectTeam("a_example","a.txt"))
+    p1.start()
+    pool.append(p1)
+    p2 = mp.Process(target=selectTeam("b_little_bit_of_everything.in","b.txt"))
+    p2.start()
+    pool.append(p2)
+    p3 = mp.Process(target=selectTeam("c_many_ingredients.in","c.txt"))
+    p3.start()
+    pool.append(p3)
+    p4 = mp.Process(target=selectTeam("d_many_pizzas.in","d.txt"))
+    p4.start()
+    pool.append(p4)
+    p5 = mp.Process(target=selectTeam("e_many_teams.in","e.txt"))
+    p5.start()
+    pool.append(p5)
+    for p in pool:
+        p.join()
